@@ -7,13 +7,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User{
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "user_id", nullable = false)
@@ -28,7 +35,7 @@ public class User{
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Invite> invite;
+    private List<Invite> invites;
 
     @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
@@ -37,6 +44,42 @@ public class User{
     public User(String account, String password) {
         this.account = account;
         this.password = password;
+    }
+
+    /**
+     * ROLE_{Team id}_{LEADER/MEMBER} Team 에 팀장, 멤버 권한인지
+     * @return List ROLE_{Team id}_{LEADER/MEMBER} Team 에 팀장, 멤버 권한인지
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getInvites().stream()
+                .map(invite -> new SimpleGrantedAuthority(invite.getTeam().getId() + invite.getRole().toString()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getUsername() {
+        return this.account;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
 
