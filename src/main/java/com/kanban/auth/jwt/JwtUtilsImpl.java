@@ -110,7 +110,7 @@ public class JwtUtilsImpl implements JwtUtils{
      */
     private String authoritiesToString(Authentication authentication) {
         return authentication.getAuthorities().stream()
-                .map(authority -> "ROLE_" + authority.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
     }
 
