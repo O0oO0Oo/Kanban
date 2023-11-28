@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
@@ -53,9 +54,19 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getInvites().stream()
-                .map(invite -> new SimpleGrantedAuthority(invite.getTeam().getId() + invite.getRole().toString()))
-                .collect(Collectors.toList());
+                .map(invite -> {
+                            if (invite.isAccept()) {
+                                return new SimpleGrantedAuthority(
+                                        invite.getTeam().getId() + "_" + invite.getRole().toString()
+                                );
+                            }
+                            return null;
+                        }
+                )
+                .filter(Objects::nonNull)
+                .toList();
     }
+
 
     @Override
     public String getUsername() {
