@@ -4,10 +4,7 @@ package com.kanban.team.entity;
 import com.kanban.team.enums.Role;
 import com.kanban.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -30,6 +27,7 @@ public class Invite {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Setter
     private boolean accept;
 
     @Builder

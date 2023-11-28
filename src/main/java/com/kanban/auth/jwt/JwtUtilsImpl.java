@@ -66,7 +66,7 @@ public class JwtUtilsImpl implements JwtUtils{
                 .parseClaimsJws(token)
                 .getBody();
 
-        if (claims.get("authorities", String.class) != null) {
+        if (!claims.get("authorities", String.class).isEmpty()) {
             String[] authorities = claims
                     .get("authorities", String.class)
                     .split(",");
@@ -110,7 +110,7 @@ public class JwtUtilsImpl implements JwtUtils{
      */
     private String authoritiesToString(Authentication authentication) {
         return authentication.getAuthorities().stream()
-                .map(authority -> "ROLE_" + authority.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
     }
 
