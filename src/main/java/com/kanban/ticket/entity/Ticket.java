@@ -1,5 +1,6 @@
 package com.kanban.ticket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanban.column.entity.BoardColumn;
 import com.kanban.ticket.enums.Tag;
 import com.kanban.user.entity.User;
@@ -35,10 +36,12 @@ public class Ticket {
     private LocalDate deadline;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "board_column_id")
     private BoardColumn boardColumn;
 

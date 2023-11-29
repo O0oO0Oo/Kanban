@@ -1,5 +1,6 @@
 package com.kanban.column.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanban.team.entity.Team;
 import com.kanban.ticket.entity.Ticket;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class BoardColumn {
     private String name;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "team_id")
     private Team team;
 
