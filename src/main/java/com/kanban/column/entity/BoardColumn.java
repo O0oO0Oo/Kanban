@@ -1,5 +1,6 @@
 package com.kanban.column.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanban.team.entity.Team;
 import com.kanban.ticket.entity.Ticket;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardColumn {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_column_id", nullable = false)
     private Long id;
 
@@ -25,7 +26,8 @@ public class BoardColumn {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "team_id")
     private Team team;
 

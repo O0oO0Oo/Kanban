@@ -1,5 +1,6 @@
 package com.kanban.ticket.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanban.column.entity.BoardColumn;
 import com.kanban.ticket.enums.Tag;
 import com.kanban.user.entity.User;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_id", nullable = false)
     private Long id;
 
@@ -34,11 +35,13 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDate deadline;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "board_column_id")
     private BoardColumn boardColumn;
 
