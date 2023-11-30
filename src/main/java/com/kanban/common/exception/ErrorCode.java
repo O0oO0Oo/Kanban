@@ -17,6 +17,9 @@ public enum ErrorCode {
     INVITE_NOT_FOUND(HttpStatus.NOT_FOUND, "I001", "존재하지 않는 초대 입니다."),
     INVITE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "I002", "이미 초대를 하였거나 팀의 멤버입니다."),
 
+    //BoardColumn
+    BOARD_COLUMN_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "존재하지 않는 컬럼 입니다."),
+
     //auth
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "잘못된 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다.")
