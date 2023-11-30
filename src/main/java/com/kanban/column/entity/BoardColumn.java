@@ -26,7 +26,7 @@ public class BoardColumn {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "team_id")
     private Team team;

@@ -35,12 +35,12 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDate deadline;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "board_column_id")
     private BoardColumn boardColumn;
