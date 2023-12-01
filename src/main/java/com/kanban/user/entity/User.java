@@ -1,5 +1,6 @@
 package com.kanban.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.kanban.team.entity.Invite;
 import com.kanban.ticket.entity.Ticket;
 import jakarta.persistence.*;
@@ -91,6 +92,11 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @JsonValue
+    public String toString() {
+        return this.account;
     }
 }
 
