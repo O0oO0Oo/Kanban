@@ -20,6 +20,9 @@ public enum ErrorCode {
     //BoardColumn
     BOARD_COLUMN_NOT_FOUND(HttpStatus.NOT_FOUND, "B001", "존재하지 않는 컬럼 입니다."),
 
+    //Ticket
+    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "T001", "존재하지 않는 티켓 입니다."),
+
     //auth
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "A001", "잘못된 토큰입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "A002", "만료된 토큰입니다.")
