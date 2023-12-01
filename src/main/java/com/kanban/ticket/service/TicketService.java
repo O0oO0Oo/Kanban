@@ -50,7 +50,7 @@ public class TicketService {
 
     public Response<Void> modifyTicketField(ModifyTicketFiledRequest request) {
         BoardColumn boardColumn = findBoardColumnByTeamIdAndIdOrElseThrow(request.teamId(), request.columnId());
-        Ticket ticket = findTicketByBoardColumnIdAndTicketIdOrElseThrow(boardColumn.getId(), request.ticketId());
+        Ticket ticket = findTicketByBoardColumnIdAndIdOrElseThrow(boardColumn.getId(), request.ticketId());
 
         User user = findUserByAccountOrElseThrow(request.account());
 
@@ -59,34 +59,34 @@ public class TicketService {
         ticket.setWorkTime(request.workTime());
         ticket.setDeadline(request.deadline());
         ticket.setUser(user);
-
         ticketRepository.save(ticket);
+
         return Response.successVoid();
     }
 
     public Response<Void> modifyTicketOrder(ModifyTicketOrderRequest request) {
         BoardColumn boardColumn = findBoardColumnByTeamIdAndIdOrElseThrow(request.teamId(), request.columnId());
-        Ticket ticketA = findTicketByBoardColumnIdAndTicketIdOrElseThrow(boardColumn.getId(), request.orderATicketId());
-        Ticket ticketB = findTicketByBoardColumnIdAndTicketIdOrElseThrow(boardColumn.getId(), request.orderBTicketId());
+        Ticket ticketA = findTicketByBoardColumnIdAndIdOrElseThrow(boardColumn.getId(), request.orderATicketId());
+        Ticket ticketB = findTicketByBoardColumnIdAndIdOrElseThrow(boardColumn.getId(), request.orderBTicketId());
 
         int temp = ticketA.getOrderNumber();
         ticketA.setOrderNumber(ticketB.getOrderNumber());
         ticketB.setOrderNumber(temp);
-
         ticketRepository.saveAll(List.of(ticketA, ticketB));
+
         return Response.successVoid();
     }
 
     public Response<Void> removeTicket(RemoveTicketRequest request) {
         BoardColumn boardColumn = findBoardColumnByTeamIdAndIdOrElseThrow(request.teamId(), request.columnId());
-        Ticket ticket = findTicketByBoardColumnIdAndTicketIdOrElseThrow(boardColumn.getId(), request.ticketId());
+        Ticket ticket = findTicketByBoardColumnIdAndIdOrElseThrow(boardColumn.getId(), request.ticketId());
         ticketRepository.delete(ticket);
 
         List<Ticket> tickets = boardColumn.getTickets();
         IntStream.range(0, tickets.size())
                 .forEach(index -> tickets.get(index).setOrderNumber(index + 1));
-
         ticketRepository.saveAll(tickets);
+
         return Response.successVoid();
     }
 
@@ -107,7 +107,7 @@ public class TicketService {
                 );
     }
 
-    private Ticket findTicketByBoardColumnIdAndTicketIdOrElseThrow(Long boardColumnId, Long ticketId) {
+    private Ticket findTicketByBoardColumnIdAndIdOrElseThrow(Long boardColumnId, Long ticketId) {
         return ticketRepository.findTicketByBoardColumnIdAndId(boardColumnId, ticketId)
                 .orElseThrow(
                         () -> new CustomException(ErrorCode.TICKET_NOT_FOUND)
