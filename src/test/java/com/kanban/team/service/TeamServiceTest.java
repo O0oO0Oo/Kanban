@@ -68,7 +68,7 @@ class TeamServiceTest {
         FindTeamResponse findTeamResponse2 = FindTeamResponse.of(invite2);
         List<FindTeamResponse> findTeamResponses = List.of(findTeamResponse1, findTeamResponse2);
 
-        when(userRepository.findByAccount(principal))
+        when(userRepository.findUserByAccount(principal))
                 .thenReturn(Optional.of(user));
         when(inviteRepository.findAllByUserAndAcceptIsTrue(user))
                 .thenReturn(inviteList);
@@ -99,7 +99,7 @@ class TeamServiceTest {
                 .team(team)
                 .build();
 
-        when(userRepository.findByAccount(principal))
+        when(userRepository.findUserByAccount(principal))
                 .thenReturn(Optional.of(user));
         when(teamRepository.save(any(Team.class)))
                 .thenReturn(team);

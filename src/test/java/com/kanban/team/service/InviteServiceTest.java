@@ -72,7 +72,7 @@ class InviteServiceTest {
         FindInviteResponse response2 = FindInviteResponse.of(invite2);
         List<FindInviteResponse> findInviteResponses = List.of(response1, response2);
 
-        when(userRepository.findByAccount(principal))
+        when(userRepository.findUserByAccount(principal))
                 .thenReturn(Optional.of(user));
         when(inviteRepository.findAllByUserAndAcceptIsFalse(user))
                 .thenReturn(inviteList);
@@ -92,7 +92,7 @@ class InviteServiceTest {
 
         CustomException exception = new CustomException(ErrorCode.USER_ACCOUNT_NOT_FOUND);
 
-        when(userRepository.findByAccount(principal))
+        when(userRepository.findUserByAccount(principal))
                 .thenReturn(Optional.empty());
 
         // when & then
@@ -120,7 +120,7 @@ class InviteServiceTest {
                 .accept(false)
                 .build();
 
-        when(userRepository.findByAccount(addInviteRequest.inviteUserAccount()))
+        when(userRepository.findUserByAccount(addInviteRequest.inviteUserAccount()))
                 .thenReturn(Optional.of(user));
         when(teamRepository.findById(addInviteRequest.teamId()))
                 .thenReturn(Optional.of(team));
@@ -153,7 +153,7 @@ class InviteServiceTest {
                 .accept(false)
                 .build();
 
-        when(userRepository.findByAccount(
+        when(userRepository.findUserByAccount(
                 principal
         ))
                 .thenReturn(Optional.of(user));

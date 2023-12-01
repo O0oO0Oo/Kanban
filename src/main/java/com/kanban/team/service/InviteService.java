@@ -29,38 +29,21 @@ public class InviteService {
     private final UserRepository userRepository;
 
     public Response<List<FindInviteResponse>> findAllInvite(String principal) {
-        User user = userRepository.findByAccount(
-                principal
-        ).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_ACCOUNT_NOT_FOUND)
-        );
-
+        User user = findUserByAccountOrElseThrow(principal);
         List<Invite> invites = inviteRepository.findAllByUserAndAcceptIsFalse(user);
 
         List<FindInviteResponse> findInviteResponses = invites.stream()
                 .map(FindInviteResponse::of)
                 .toList();
-
         return Response.success(findInviteResponses);
     }
 
     @Transactional
     public Response<Void> addInvite(AddInviteRequest addInviteRequest) {
-        User user = userRepository.findByAccount(
-                addInviteRequest.inviteUserAccount()
-        ).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_ACCOUNT_NOT_FOUND)
-        );
+        User user = findUserByAccountOrElseThrow(addInviteRequest.inviteUserAccount());
+        Team team = findTeamByIdOrElseThrow(addInviteRequest.teamId());
 
-        Team team = teamRepository.findById(
-                addInviteRequest.teamId()
-        ).orElseThrow(
-                () -> new CustomException(ErrorCode.TEAM_NOT_FOUND)
-        );
-
-        if (inviteRepository.existsByUserAndTeam(user, team)) {
-            throw new CustomException(ErrorCode.INVITE_ALREADY_EXIST);
-        }
+        isExistsByUserAndTeamOrElseThrow(user, team);
 
         Invite invite = Invite.builder()
                 .team(team)
@@ -68,29 +51,48 @@ public class InviteService {
                 .role(Role.MEMBER)
                 .accept(false)
                 .build();
-
         inviteRepository.save(invite);
 
         return Response.successVoid();
     }
 
+    private void isExistsByUserAndTeamOrElseThrow(User user, Team team) {
+        if (inviteRepository.existsByUserAndTeam(user, team)) {
+            throw new CustomException(ErrorCode.INVITE_ALREADY_EXIST);
+        }
+    }
+
     @Transactional
     public Response<Void> updateInvite(String principal, Long inviteId) {
-        User user = userRepository.findByAccount(
-                principal
-        ).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_ACCOUNT_NOT_FOUND)
-        );
-
-        Invite invite = inviteRepository.findAllByUserAndAcceptIsFalseAndId(user, inviteId)
-                .orElseThrow(
-                        () -> new CustomException(ErrorCode.INVITE_NOT_FOUND)
-                );
+        User user = findUserByAccountOrElseThrow(principal);
+        Invite invite = findAllByUserAndAcceptIsFalseAndIdOrElseThrow(user, inviteId);
 
         invite.setAccept(true);
-
         inviteRepository.save(invite);
 
         return Response.successVoid();
+    }
+
+    private User findUserByAccountOrElseThrow(String account) {
+        return userRepository.findUserByAccount(
+                account
+        ).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_ACCOUNT_NOT_FOUND)
+        );
+    }
+
+    private Team findTeamByIdOrElseThrow(Long teamId) {
+        return teamRepository.findById(
+                teamId
+        ).orElseThrow(
+                () -> new CustomException(ErrorCode.TEAM_NOT_FOUND)
+        );
+    }
+
+    private Invite findAllByUserAndAcceptIsFalseAndIdOrElseThrow(User user, Long inviteId) {
+        return inviteRepository.findAllByUserAndAcceptIsFalseAndId(user, inviteId)
+                .orElseThrow(
+                        () -> new CustomException(ErrorCode.INVITE_NOT_FOUND)
+                );
     }
 }

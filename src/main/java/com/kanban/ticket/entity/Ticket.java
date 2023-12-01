@@ -1,6 +1,7 @@
 package com.kanban.ticket.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kanban.column.entity.BoardColumn;
 import com.kanban.ticket.enums.Tag;
 import com.kanban.user.entity.User;
@@ -30,14 +31,14 @@ public class Ticket {
     private Tag tag;
 
     @Column(nullable = false)
-    private Long workTime;
+    private Double workTime;
 
     @Column(nullable = false)
     private LocalDate deadline;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     @JoinColumn(name = "user_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,7 +47,7 @@ public class Ticket {
     private BoardColumn boardColumn;
 
     @Builder
-    public Ticket(String title, int orderNumber, Tag tag, Long workTime, LocalDate deadline, User user, BoardColumn boardColumn) {
+    public Ticket(String title, int orderNumber, Tag tag, Double workTime, LocalDate deadline, User user, BoardColumn boardColumn) {
         this.title = title;
         this.orderNumber = orderNumber;
         this.tag = tag;

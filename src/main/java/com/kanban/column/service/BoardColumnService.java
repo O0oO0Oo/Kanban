@@ -40,7 +40,6 @@ public class BoardColumnService {
                 .orderNumber(order)
                 .name(request.columnName())
                 .build();
-
         boardColumnRepository.save(boardColumn);
 
         return Response.successVoid();
@@ -54,7 +53,6 @@ public class BoardColumnService {
         int temp = boardColumnB.getOrderNumber();
         boardColumnB.setOrderNumber(boardColumnA.getOrderNumber());
         boardColumnA.setOrderNumber(temp);
-
         boardColumnRepository.saveAll(List.of(boardColumnA, boardColumnB));
 
         return Response.successVoid();
@@ -77,7 +75,6 @@ public class BoardColumnService {
 
         Team team = findTeamByIdOrElseThrow(request.teamId());
         List<BoardColumn> boardColumns = boardColumnRepository.findByTeamOrderByOrderNumber(team);
-
         IntStream.range(0, boardColumns.size())
                 .forEach(index -> boardColumns.get(index).setOrderNumber(index + 1));
         boardColumnRepository.saveAll(boardColumns);

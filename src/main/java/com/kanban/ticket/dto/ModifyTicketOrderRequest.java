@@ -1,13 +1,15 @@
-package com.kanban.column.dto;
+package com.kanban.ticket.dto;
 
 import jakarta.validation.constraints.NotNull;
 
-public record ModifyBoardColumnOrderRequest(
+public record ModifyTicketOrderRequest(
         @NotNull(message = "는 필수 입니다.")
         Long teamId,
         @NotNull(message = "는 필수 입니다.")
-        Long orderAColumnId,
+        Long columnId,
         @NotNull(message = "는 필수 입니다.")
-        Long orderBColumnId
+        Long orderATicketId,
+        @NotNull(message = "는 필수 입니다.")
+        Long orderBTicketId
 ) {
 }

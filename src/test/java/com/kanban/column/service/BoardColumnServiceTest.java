@@ -93,14 +93,18 @@ class BoardColumnServiceTest {
         Long columnId = 2L;
         RemoveBoardColumnRequest request = new RemoveBoardColumnRequest(teamId, columnId);
 
-        BoardColumn boardColumn = mock(BoardColumn.class);
+        BoardColumn boardColumn = spy(BoardColumn.class);
+        boardColumn.setOrderNumber(2);
         Team team = mock(Team.class);
         ReflectionTestUtils.setField(team, "id", teamId);
 
-        BoardColumn reorderColumn1 = mock(BoardColumn.class);
-        BoardColumn reorderColumn2 = mock(BoardColumn.class);
-        BoardColumn reorderColumn3 = mock(BoardColumn.class);
-        List<BoardColumn> reorderColumnList = List.of(reorderColumn1, reorderColumn2, reorderColumn3);
+        BoardColumn reorderColumn1 = spy(BoardColumn.class);
+        reorderColumn1.setOrderNumber(1);
+        BoardColumn reorderColumn2 = spy(BoardColumn.class);
+        reorderColumn2.setOrderNumber(3);
+        BoardColumn reorderColumn3 = spy(BoardColumn.class);
+        reorderColumn3.setOrderNumber(4);
+        List<BoardColumn> reorderColumns = List.of(reorderColumn1, reorderColumn2, reorderColumn3);;
 
         when(boardColumnRepository.findBoardColumnByTeamIdAndId(request.teamId(), request.columnId()))
                 .thenReturn(Optional.of(boardColumn));
@@ -108,17 +112,18 @@ class BoardColumnServiceTest {
         when(teamRepository.findById(request.teamId()))
                 .thenReturn(Optional.of(team));
         when(boardColumnRepository.findByTeamOrderByOrderNumber(team))
-                .thenReturn(reorderColumnList);
-        when(boardColumnRepository.saveAll(reorderColumnList))
-                .thenReturn(reorderColumnList);
+                .thenReturn(reorderColumns);
+        when(boardColumnRepository.saveAll(reorderColumns))
+                .thenReturn(reorderColumns);
 
-        FindBoardColumnResponse actualResponse = new FindBoardColumnResponse(team.getId(), reorderColumnList);
+        FindBoardColumnResponse actualResponse = new FindBoardColumnResponse(team.getId(), reorderColumns);
 
         // when
         Response<FindBoardColumnResponse> expectResponse = boardColumnService.removeBoardColumn(request);
 
         // then
         assertThat(actualResponse).isEqualTo(expectResponse.data());
+        assertThat(2).isEqualTo(reorderColumn2.getOrderNumber());
     }
 
     @Test
@@ -132,8 +137,8 @@ class BoardColumnServiceTest {
 
         int orderA = 1;
         int orderB = 2;
-        BoardColumn columnA = mock(BoardColumn.class);
-        BoardColumn columnB = mock(BoardColumn.class);
+        BoardColumn columnA = spy(BoardColumn.class);
+        BoardColumn columnB = spy(BoardColumn.class);
         columnA.setOrderNumber(orderA);
         columnB.setOrderNumber(orderB);
         List<BoardColumn> modifiedColumns = List.of(columnA, columnB);
@@ -151,7 +156,7 @@ class BoardColumnServiceTest {
         Response<Void> expectResponse = boardColumnService.modifyBoardColumnOrder(request);
 
         // then
-        assertThat(actualResponse).isEqualTo(expectResponse);
+        assertThat(1).isEqualTo(columnB.getOrderNumber());
     }
     
     @Test
