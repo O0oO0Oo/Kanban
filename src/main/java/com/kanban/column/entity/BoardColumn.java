@@ -34,6 +34,7 @@ public class BoardColumn {
     @OneToMany(mappedBy = "boardColumn",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @org.hibernate.annotations.OrderBy(clause = "orderNumber ASC")
     private List<Ticket> tickets;
 
     @Builder
