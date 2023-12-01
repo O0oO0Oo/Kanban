@@ -30,7 +30,7 @@ public class Ticket {
     private Tag tag;
 
     @Column(nullable = false)
-    private Long workTime;
+    private Double workTime;
 
     @Column(nullable = false)
     private LocalDate deadline;
@@ -46,7 +46,7 @@ public class Ticket {
     private BoardColumn boardColumn;
 
     @Builder
-    public Ticket(String title, int orderNumber, Tag tag, Long workTime, LocalDate deadline, User user, BoardColumn boardColumn) {
+    public Ticket(String title, int orderNumber, Tag tag, Double workTime, LocalDate deadline, User user, BoardColumn boardColumn) {
         this.title = title;
         this.orderNumber = orderNumber;
         this.tag = tag;
