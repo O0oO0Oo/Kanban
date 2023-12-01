@@ -9,5 +9,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     int countByBoardColumnId(Long boardColumnId);
 
-    Optional<Ticket> findTicketByBoardColumnIdAndTicketId(Long boardColumnId, Long ticketId);
+    Optional<Ticket> findTicketByBoardColumnIdAndId(Long boardColumnId, Long ticketId);
 }

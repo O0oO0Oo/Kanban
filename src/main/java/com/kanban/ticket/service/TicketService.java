@@ -5,7 +5,6 @@ import com.kanban.column.repository.BoardColumnRepository;
 import com.kanban.common.dto.Response;
 import com.kanban.common.exception.CustomException;
 import com.kanban.common.exception.ErrorCode;
-import com.kanban.team.repository.TeamRepository;
 import com.kanban.ticket.dto.AddTicketRequest;
 import com.kanban.ticket.dto.ModifyTicketFiledRequest;
 import com.kanban.ticket.dto.ModifyTicketOrderRequest;
@@ -109,7 +108,7 @@ public class TicketService {
     }
 
     private Ticket findTicketByBoardColumnIdAndTicketIdOrElseThrow(Long boardColumnId, Long ticketId) {
-        return ticketRepository.findTicketByBoardColumnIdAndTicketId(boardColumnId, ticketId)
+        return ticketRepository.findTicketByBoardColumnIdAndId(boardColumnId, ticketId)
                 .orElseThrow(
                         () -> new CustomException(ErrorCode.TICKET_NOT_FOUND)
                 );
