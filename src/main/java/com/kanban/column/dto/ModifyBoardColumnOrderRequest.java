@@ -3,11 +3,11 @@ package com.kanban.column.dto;
 import jakarta.validation.constraints.NotNull;
 
 public record ModifyBoardColumnOrderRequest(
-        @NotNull
+        @NotNull(message = "는 필수 입니다.")
         Long teamId,
-        @NotNull
+        @NotNull(message = "는 필수 입니다.")
         Long orderAColumnId,
-        @NotNull
+        @NotNull(message = "는 필수 입니다.")
         Long orderBColumnId
 ) {
 }
