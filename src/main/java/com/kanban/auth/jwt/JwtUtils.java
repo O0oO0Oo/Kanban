@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface JwtUtils {
     String extractUserName(String token);
     Collection<? extends GrantedAuthority> extractAuthorities(String token);
-    String generateAccessToken(Authentication authentication);
+    String generateAccessToken(Authentication authentication, String authoritiesToString);
     String generateRefreshToken(Authentication authentication);
     boolean isTokenValid(String token);
 }

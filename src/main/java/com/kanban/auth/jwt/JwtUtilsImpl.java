@@ -66,7 +66,8 @@ public class JwtUtilsImpl implements JwtUtils{
                 .parseClaimsJws(token)
                 .getBody();
 
-        if (!claims.get("authorities", String.class).isEmpty()) {
+        String claimsAuthorities = claims.get("authorities", String.class);
+        if ((claimsAuthorities != null) && !(claimsAuthorities.isEmpty())) {
             String[] authorities = claims
                     .get("authorities", String.class)
                     .split(",");
@@ -80,11 +81,11 @@ public class JwtUtilsImpl implements JwtUtils{
     }
 
     @Override
-    public String generateAccessToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication, String authoritiesToString) {
         return generateToken(authentication, accessKey, accessExpirationTime, ACCESS)
+                .claim("authorities", authoritiesToString)
                 .compact();
     }
-
 
     @Override
     public String generateRefreshToken(Authentication authentication) {
@@ -96,22 +97,10 @@ public class JwtUtilsImpl implements JwtUtils{
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("type", type + " Token")
-                .claim("authorities", authoritiesToString(authentication))
                 .setIssuer("Kanban")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime * 1000))
                 .signWith(SignatureAlgorithm.HS256, key);
-    }
-
-    /**
-     *
-     * @param authentication
-     * @return ex: ROLE_{Team id}_{LEADER/MEMBER} Team 에 팀장, 멤버 권한인지
-     */
-    private String authoritiesToString(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
     }
 
     @Override
@@ -142,8 +131,6 @@ public class JwtUtilsImpl implements JwtUtils{
 
         int i = decodedJson.indexOf("\"type\":\"");
 
-        String type = decodedJson.substring(i + 8, i + 15).strip();
-
-        return type;
+        return decodedJson.substring(i + 8, i + 15).strip();
     }
 }

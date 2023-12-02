@@ -20,26 +20,19 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final AuthenticationManager authenticationManager;
-
     private final JwtUtils jwtUtils;
-
     private final AuthCacheService authCacheService;
 
-    public Response<String> login(UserLoginRequest userLoginRequest) throws BadCredentialsException {
+    public Response<String> login(UserLoginRequest userLoginRequest) {
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(
                 userLoginRequest.account(),
                 userLoginRequest.password()
         );
-
-        Authentication authenticate;
-        try {
-            authenticate = authenticationManager.authenticate(authenticationToken);
-        } catch (BadCredentialsException e) {
-            throw new CustomException(ErrorCode.USER_BAD_CREDENTIALS);
-        }
+        Authentication authenticate = authenticateOrElseThrow(authenticationToken);
 
         String refreshToken = authCacheService.addRefreshKey(authenticate);
+        authCacheService.addAuthorities(authenticate);
 
         return Response.success(refreshToken);
     }
@@ -49,9 +42,18 @@ public class AuthService {
         String refreshKeyFromUser = (String) authentication.getDetails();
 
         if (refreshKeyFromCache.equals(refreshKeyFromUser)) {
-            return Response.success(jwtUtils.generateAccessToken(authentication));
+            String authorities = authCacheService.findAuthorities(authentication.getName());
+            return Response.success(jwtUtils.generateAccessToken(authentication, authorities));
         }
 
         throw new JwtException("Invalid Refresh Key.");
+    }
+
+    private Authentication authenticateOrElseThrow(UsernamePasswordAuthenticationToken authenticationToken) {
+        try {
+            return authenticationManager.authenticate(authenticationToken);
+        } catch (BadCredentialsException e) {
+            throw new CustomException(ErrorCode.USER_BAD_CREDENTIALS);
+        }
     }
 }
