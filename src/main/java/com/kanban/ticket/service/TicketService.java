@@ -81,8 +81,11 @@ public class TicketService {
         BoardColumn boardColumn = findBoardColumnByTeamIdAndIdOrElseThrow(request.teamId(), request.columnId());
         Ticket ticket = findTicketByBoardColumnIdAndIdOrElseThrow(boardColumn.getId(), request.ticketId());
         ticketRepository.delete(ticket);
+        ticketRepository.flush();
 
-        List<Ticket> tickets = boardColumn.getTickets();
+        List<Ticket> tickets = boardColumn.getTickets().stream()
+                .filter(t -> !t.getId().equals(ticket.getId()))
+                .toList();
         IntStream.range(0, tickets.size())
                 .forEach(index -> tickets.get(index).setOrderNumber(index + 1));
         ticketRepository.saveAll(tickets);
