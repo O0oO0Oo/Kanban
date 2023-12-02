@@ -31,8 +31,8 @@ public class InviteController {
     }
 
     @PutMapping("/{inviteId}")
-    public Response<Void> updateInvite(@AuthenticationPrincipal String principal,
-                                       @PathVariable Long inviteId) {
-        return inviteService.updateInvite(principal, inviteId);
+    public Response<Void> modifyInviteAccept(@AuthenticationPrincipal String principal,
+                                             @PathVariable Long inviteId) {
+        return inviteService.modifyInviteAccept(principal, inviteId);
     }
 }

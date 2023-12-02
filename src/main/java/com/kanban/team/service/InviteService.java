@@ -1,5 +1,6 @@
 package com.kanban.team.service;
 
+import com.kanban.auth.service.AuthCacheService;
 import com.kanban.common.dto.Response;
 import com.kanban.common.exception.CustomException;
 import com.kanban.common.exception.ErrorCode;
@@ -14,6 +15,7 @@ import com.kanban.user.entity.User;
 import com.kanban.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +29,7 @@ public class InviteService {
     private final InviteRepository inviteRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final AuthCacheService authCacheService;
 
     public Response<List<FindInviteResponse>> findAllInvite(String principal) {
         User user = findUserByAccountOrElseThrow(principal);
@@ -63,12 +66,13 @@ public class InviteService {
     }
 
     @Transactional
-    public Response<Void> updateInvite(String principal, Long inviteId) {
+    public Response<Void> modifyInviteAccept(String principal, Long inviteId) {
         User user = findUserByAccountOrElseThrow(principal);
         Invite invite = findAllByUserAndAcceptIsFalseAndIdOrElseThrow(user, inviteId);
 
         invite.setAccept(true);
         inviteRepository.save(invite);
+        authCacheService.updateAuthorities(principal, invite.getTeam().getId() + "_" + "MEMBER");
 
         return Response.successVoid();
     }

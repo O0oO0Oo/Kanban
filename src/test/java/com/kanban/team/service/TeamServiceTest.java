@@ -1,5 +1,6 @@
 package com.kanban.team.service;
 
+import com.kanban.auth.service.AuthCacheService;
 import com.kanban.common.dto.Response;
 import com.kanban.team.dto.AddTeamRequest;
 import com.kanban.team.dto.FindTeamResponse;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +39,8 @@ class TeamServiceTest {
     private TeamRepository teamRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private AuthCacheService authCacheService;
 
     @Test
     @DisplayName("findAllTeam - 성공")
@@ -105,6 +109,8 @@ class TeamServiceTest {
                 .thenReturn(team);
         when(inviteRepository.save(any(Invite.class)))
                 .thenReturn(invite);
+        when(authCacheService.updateAuthorities(principal, invite.getTeam().getId() + "_" + "LEADER"))
+                .thenReturn(anyString());
 
         // when
         Response<Void> response = teamService.addTeam(principal, request);

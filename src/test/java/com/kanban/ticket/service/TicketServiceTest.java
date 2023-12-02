@@ -210,18 +210,25 @@ class TicketServiceTest {
 
         Ticket ticket = spy(Ticket.class);
         ticket.setOrderNumber(3);
+        ticket.setId(3L);
 
         Ticket ticket1 = spy(Ticket.class);
         ticket1.setOrderNumber(1);
+        ticket1.setId(1L);
         Ticket ticket2 = spy(Ticket.class);
-        ticket1.setOrderNumber(2);
+        ticket2.setOrderNumber(2);
+        ticket2.setId(2L);
         Ticket ticket3 = spy(Ticket.class);
-        ticket1.setOrderNumber(4);
+        ticket3.setOrderNumber(4);
+        ticket3.setId(4L);
         Ticket ticket4 = spy(Ticket.class);
-        ticket1.setOrderNumber(5);
+        ticket4.setOrderNumber(5);
+        ticket4.setId(5L);
         Ticket ticket5 = spy(Ticket.class);
-        ticket1.setOrderNumber(6);
-        List<Ticket> tickets = List.of(ticket1, ticket2, ticket3, ticket4, ticket5);
+        ticket5.setOrderNumber(6);
+        ticket5.setId(6L);
+        List<Ticket> tickets = List.of(ticket1, ticket2, ticket, ticket3, ticket4, ticket5);
+        List<Ticket> saveAllTickets = List.of(ticket1, ticket2, ticket3, ticket4, ticket5);
 
         Ticket ticket6 = spy(Ticket.class);
         ticket1.setOrderNumber(1);
@@ -240,9 +247,10 @@ class TicketServiceTest {
         when(ticketRepository.findTicketByBoardColumnIdAndId(column.getId(), request.ticketId()))
                 .thenReturn(Optional.of(ticket));
         doNothing().when(ticketRepository).delete(ticket);
+        doNothing().when(ticketRepository).flush();
         when(column.getTickets())
                 .thenReturn(tickets);
-        when(ticketRepository.saveAll(tickets))
+        when(ticketRepository.saveAll(saveAllTickets))
                 .thenReturn(returnTickets);
 
         // when
