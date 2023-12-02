@@ -1,5 +1,6 @@
 package com.kanban.team.service;
 
+import com.kanban.auth.service.AuthCacheService;
 import com.kanban.common.dto.Response;
 import com.kanban.common.exception.CustomException;
 import com.kanban.common.exception.ErrorCode;
@@ -27,6 +28,7 @@ public class TeamService {
     private final UserRepository userRepository;
     private final InviteRepository inviteRepository;
     private final TeamRepository teamRepository;
+    private final AuthCacheService authCacheService;
 
     public Response<List<FindTeamResponse>> findAllTeam(String principal) {
         User user = findUserByAccountOrElseThrow(principal);
@@ -53,8 +55,9 @@ public class TeamService {
                 .accept(true)
                 .build();
 
-        teamRepository.save(team);
+        Team savedTeam = teamRepository.save(team);
         inviteRepository.save(invite);
+        authCacheService.updateAuthorities(principal, savedTeam.getId() + "_" + "LEADER");
 
         return Response.successVoid();
     }

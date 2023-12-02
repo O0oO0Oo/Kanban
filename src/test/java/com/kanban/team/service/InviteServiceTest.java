@@ -1,5 +1,6 @@
 package com.kanban.team.service;
 
+import com.kanban.auth.service.AuthCacheService;
 import com.kanban.common.dto.Response;
 import com.kanban.common.exception.CustomException;
 import com.kanban.common.exception.ErrorCode;
@@ -41,6 +42,8 @@ class InviteServiceTest {
     private TeamRepository teamRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private AuthCacheService authCacheService;
 
     @Test
     @DisplayName("findAllInvite - 성공")
@@ -135,8 +138,8 @@ class InviteServiceTest {
     }
     
     @Test
-    @DisplayName("updateInvite - 성공")
-    void should_successUpdateInvite_when_validRequest() {
+    @DisplayName("modifyInviteAccept - 성공")
+    void should_successModifyInviteAccept_when_validRequest() {
         // given
         String principal = "test";
 
@@ -163,9 +166,11 @@ class InviteServiceTest {
                 .thenReturn(Optional.of(invite));
         when(inviteRepository.save(invite))
                 .thenReturn(invite);
+        when(authCacheService.updateAuthorities(principal, invite.getTeam().getId() + "_" + "MEMBER"))
+                .thenReturn(anyString());
 
         // when
-        Response<Void> response = inviteService.updateInvite(principal, inviteId);
+        Response<Void> response = inviteService.modifyInviteAccept(principal, inviteId);
 
         // then
         assertThat(HttpStatus.OK.value()).isEqualTo(response.status());
