@@ -29,7 +29,8 @@
 ## 2. ERD
 ![image](https://github.com/O0oO0Oo/Kanban/assets/110446760/621506a8-ab86-48a2-819e-471bf1a7247e)
 
-## 3. Api Document
+## 3. API Document
+[Postman API Document](https://documenter.getpostman.com/view/23050535/2s9YeK4ALg)
 
 ## 4. 프로젝트 학습 사항
 1. JWT Refresh, Access 인증, 인가 구현
